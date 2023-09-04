@@ -1,10 +1,3 @@
-# go-http-router
-
-A HTTP router implementation using vanilla Go.
-
-## Usage
-
-```go
 package main
 
 import (
@@ -41,18 +34,3 @@ func main() {
 
 	log.Fatal(http.ListenAndServe("localhost:8888", r.Mux()))
 }
-```
-
-Test it out:
-
-```sh
-$ curl http://localhost:8888/
-Success
-
-$ curl http://localhost:8888/ -X POST
-Method Not Allowed
-```
-
-## License
-
-[MIT](./LICENSE)
