@@ -4,6 +4,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+- Support HEAD, CONNECT, and TRACE HTTP methods
+
 ## [v0.1.0] - 2023-09-05
 
 ### Added
