@@ -23,14 +23,14 @@ func main() {
 	r := router.New()
 
 	r.Get("/", newHandler())
+	// r.Head("/", newHandler())
 	// r.Post("/", newHandler())
 	// r.Put("/", newHandler())
 	// r.Patch("/", newHandler())
 	// r.Delete("/", newHandler())
+	// r.Connect("/", newHandler())
 	// r.Options("/", newHandler())
-
-	// Define custom method
-	// r.Route("CONNECT", "/", newHandler())
+	// r.Trace("/", newHandler())
 
 	log.Fatal(http.ListenAndServe("localhost:8888", r.Mux()))
 }

@@ -9,42 +9,42 @@ type router struct {
 }
 
 func (r *router) Get(path string, handler http.Handler) {
-	r.Route(http.MethodGet, path, handler)
+	r.route(http.MethodGet, path, handler)
 }
 
 func (r *router) Head(path string, handler http.Handler) {
-	r.Route(http.MethodHead, path, handler)
+	r.route(http.MethodHead, path, handler)
 }
 
 func (r *router) Post(path string, handler http.Handler) {
-	r.Route(http.MethodPost, path, handler)
+	r.route(http.MethodPost, path, handler)
 }
 
 func (r *router) Put(path string, handler http.Handler) {
-	r.Route(http.MethodPut, path, handler)
+	r.route(http.MethodPut, path, handler)
 }
 
 func (r *router) Patch(path string, handler http.Handler) {
-	r.Route(http.MethodPatch, path, handler)
+	r.route(http.MethodPatch, path, handler)
 }
 
 func (r *router) Delete(path string, handler http.Handler) {
-	r.Route(http.MethodDelete, path, handler)
+	r.route(http.MethodDelete, path, handler)
 }
 
 func (r *router) Connect(path string, handler http.Handler) {
-	r.Route(http.MethodConnect, path, handler)
+	r.route(http.MethodConnect, path, handler)
 }
 
 func (r *router) Options(path string, handler http.Handler) {
-	r.Route(http.MethodOptions, path, handler)
+	r.route(http.MethodOptions, path, handler)
 }
 
 func (r *router) Trace(path string, handler http.Handler) {
-	r.Route(http.MethodTrace, path, handler)
+	r.route(http.MethodTrace, path, handler)
 }
 
-func (r *router) Route(method string, path string, handler http.Handler) {
+func (r *router) route(method string, path string, handler http.Handler) {
 	r.mux.HandleFunc(path, func(w http.ResponseWriter, req *http.Request) {
 		if req.Method != method {
 			w.Header().Set(http.CanonicalHeaderKey("allow"), method)
