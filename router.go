@@ -5,7 +5,7 @@ import (
 )
 
 type router struct {
-	mux *http.ServeMux
+	muxes map[string]*http.ServeMux
 }
 
 func (r *router) Get(path string, handler http.Handler) {
@@ -45,20 +45,29 @@ func (r *router) Trace(path string, handler http.Handler) {
 }
 
 func (r *router) route(method string, path string, handler http.Handler) {
-	r.mux.HandleFunc(path, func(w http.ResponseWriter, req *http.Request) {
-		if req.Method != method {
-			w.Header().Set(http.CanonicalHeaderKey("allow"), method)
-			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
-			return
-		}
-		handler.ServeHTTP(w, req)
-	})
+	mux, ok := r.muxes[method]
+	if !ok {
+		mux = http.NewServeMux()
+		r.muxes[method] = mux
+	}
+	mux.Handle(path, handler)
 }
 
 func (r *router) Mux() *http.ServeMux {
-	return r.mux
+	routerMux := http.NewServeMux()
+
+	routerMux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		mux, ok := r.muxes[req.Method]
+		if !ok {
+			http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
+			return
+		}
+		mux.ServeHTTP(w, req)
+	})
+
+	return routerMux
 }
 
 func New() *router {
-	return &router{mux: http.NewServeMux()}
+	return &router{muxes: make(map[string]*http.ServeMux)}
 }

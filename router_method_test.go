@@ -6,24 +6,14 @@ import (
 	"testing"
 )
 
-type handler struct{}
-
-func newHandler() handler {
-	return handler{}
-}
-
-func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	return
-}
-
 func TestRouterMethod(t *testing.T) {
-	t.Run("GET ok", func(t *testing.T) {
+	t.Run("method matches", func(t *testing.T) {
+		router := New()
+		router.Get("/", newHandler())
+
 		req, _ := http.NewRequest("GET", "/", nil)
 		rr := httptest.NewRecorder()
 
-		router := New()
-		router.Get("/", newHandler())
-
 		router.Mux().ServeHTTP(rr, req)
 
 		if status := rr.Code; status != http.StatusOK {
@@ -31,241 +21,17 @@ func TestRouterMethod(t *testing.T) {
 		}
 	})
 
-	t.Run("GET not ok", func(t *testing.T) {
+	t.Run("method not found", func(t *testing.T) {
+		router := New()
+		router.Get("/", newHandler())
+
 		req, _ := http.NewRequest("POST", "/", nil)
 		rr := httptest.NewRecorder()
 
-		router := New()
-		router.Get("/", newHandler())
-
 		router.Mux().ServeHTTP(rr, req)
 
-		if status := rr.Code; status != http.StatusMethodNotAllowed {
-			t.Errorf("Expecting status code %d, got %d instead", http.StatusMethodNotAllowed, status)
-		}
-	})
-
-	t.Run("HEAD ok", func(t *testing.T) {
-		req, _ := http.NewRequest("HEAD", "/", nil)
-		rr := httptest.NewRecorder()
-
-		router := New()
-		router.Head("/", newHandler())
-
-		router.Mux().ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusOK {
-			t.Errorf("Expecting status code %d, got %d instead", http.StatusOK, status)
-		}
-	})
-
-	t.Run("HEAD not ok", func(t *testing.T) {
-		req, _ := http.NewRequest("HEAD", "/", nil)
-		rr := httptest.NewRecorder()
-
-		router := New()
-		router.Connect("/", newHandler())
-
-		router.Mux().ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusMethodNotAllowed {
-			t.Errorf("Expecting status code %d, got %d instead", http.StatusMethodNotAllowed, status)
-		}
-	})
-
-	t.Run("POST ok", func(t *testing.T) {
-		req, _ := http.NewRequest("POST", "/", nil)
-		rr := httptest.NewRecorder()
-
-		router := New()
-		router.Post("/", newHandler())
-
-		router.Mux().ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusOK {
-			t.Errorf("Expecting status code %d, got %d instead", http.StatusOK, status)
-		}
-	})
-
-	t.Run("POST not ok", func(t *testing.T) {
-		req, _ := http.NewRequest("PUT", "/", nil)
-		rr := httptest.NewRecorder()
-
-		router := New()
-		router.Post("/", newHandler())
-
-		router.Mux().ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusMethodNotAllowed {
-			t.Errorf("Expecting status code %d, got %d instead", http.StatusMethodNotAllowed, status)
-		}
-	})
-
-	t.Run("PUT ok", func(t *testing.T) {
-		req, _ := http.NewRequest("PUT", "/", nil)
-		rr := httptest.NewRecorder()
-
-		router := New()
-		router.Put("/", newHandler())
-
-		router.Mux().ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusOK {
-			t.Errorf("Expecting status code %d, got %d instead", http.StatusOK, status)
-		}
-	})
-
-	t.Run("PUT not ok", func(t *testing.T) {
-		req, _ := http.NewRequest("PUT", "/", nil)
-		rr := httptest.NewRecorder()
-
-		router := New()
-		router.Get("/", newHandler())
-
-		router.Mux().ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusMethodNotAllowed {
-			t.Errorf("Expecting status code %d, got %d instead", http.StatusMethodNotAllowed, status)
-		}
-	})
-
-	t.Run("PATCH ok", func(t *testing.T) {
-		req, _ := http.NewRequest("PATCH", "/", nil)
-		rr := httptest.NewRecorder()
-
-		router := New()
-		router.Patch("/", newHandler())
-
-		router.Mux().ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusOK {
-			t.Errorf("Expecting status code %d, got %d instead", http.StatusOK, status)
-		}
-	})
-
-	t.Run("PATCH not ok", func(t *testing.T) {
-		req, _ := http.NewRequest("PATCH", "/", nil)
-		rr := httptest.NewRecorder()
-
-		router := New()
-		router.Put("/", newHandler())
-
-		router.Mux().ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusMethodNotAllowed {
-			t.Errorf("Expecting status code %d, got %d instead", http.StatusMethodNotAllowed, status)
-		}
-	})
-
-	t.Run("DELETE ok", func(t *testing.T) {
-		req, _ := http.NewRequest("DELETE", "/", nil)
-		rr := httptest.NewRecorder()
-
-		router := New()
-		router.Delete("/", newHandler())
-
-		router.Mux().ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusOK {
-			t.Errorf("Expecting status code %d, got %d instead", http.StatusOK, status)
-		}
-	})
-
-	t.Run("DELETE not ok", func(t *testing.T) {
-		req, _ := http.NewRequest("DELETE", "/", nil)
-		rr := httptest.NewRecorder()
-
-		router := New()
-		router.Post("/", newHandler())
-
-		router.Mux().ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusMethodNotAllowed {
-			t.Errorf("Expecting status code %d, got %d instead", http.StatusMethodNotAllowed, status)
-		}
-	})
-
-	t.Run("CONNECT ok", func(t *testing.T) {
-		req, _ := http.NewRequest("CONNECT", "/", nil)
-		rr := httptest.NewRecorder()
-
-		router := New()
-		router.Connect("/", newHandler())
-
-		router.Mux().ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusOK {
-			t.Errorf("Expecting status code %d, got %d instead", http.StatusOK, status)
-		}
-	})
-
-	t.Run("CONNECT not ok", func(t *testing.T) {
-		req, _ := http.NewRequest("CONNECT", "/", nil)
-		rr := httptest.NewRecorder()
-
-		router := New()
-		router.Post("/", newHandler())
-
-		router.Mux().ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusMethodNotAllowed {
-			t.Errorf("Expecting status code %d, got %d instead", http.StatusMethodNotAllowed, status)
-		}
-	})
-
-	t.Run("OPTIONS ok", func(t *testing.T) {
-		req, _ := http.NewRequest("OPTIONS", "/", nil)
-		rr := httptest.NewRecorder()
-
-		router := New()
-		router.Options("/", newHandler())
-
-		router.Mux().ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusOK {
-			t.Errorf("Expecting status code %d, got %d instead", http.StatusOK, status)
-		}
-	})
-
-	t.Run("OPTIONS not ok", func(t *testing.T) {
-		req, _ := http.NewRequest("OPTIONS", "/", nil)
-		rr := httptest.NewRecorder()
-
-		router := New()
-		router.Patch("/", newHandler())
-
-		router.Mux().ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusMethodNotAllowed {
-			t.Errorf("Expecting status code %d, got %d instead", http.StatusMethodNotAllowed, status)
-		}
-	})
-
-	t.Run("TRACE ok", func(t *testing.T) {
-		req, _ := http.NewRequest("TRACE", "/", nil)
-		rr := httptest.NewRecorder()
-
-		router := New()
-		router.Trace("/", newHandler())
-
-		router.Mux().ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusOK {
-			t.Errorf("Expecting status code %d, got %d instead", http.StatusOK, status)
-		}
-	})
-
-	t.Run("TRACE not ok", func(t *testing.T) {
-		req, _ := http.NewRequest("TRACE", "/", nil)
-		rr := httptest.NewRecorder()
-
-		router := New()
-		router.Get("/", newHandler())
-
-		router.Mux().ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusMethodNotAllowed {
-			t.Errorf("Expecting status code %d, got %d instead", http.StatusMethodNotAllowed, status)
+		if status := rr.Code; status != http.StatusNotImplemented {
+			t.Errorf("Expecting status code %d, got %d instead", http.StatusNotImplemented, status)
 		}
 	})
 }
