@@ -30,16 +30,31 @@ func main() {
 	r := router.New()
 
 	r.Get("/", newHandler())
+	// r.Head("/", newHandler())
 	// r.Post("/", newHandler())
 	// r.Put("/", newHandler())
 	// r.Patch("/", newHandler())
 	// r.Delete("/", newHandler())
+	// r.Connect("/", newHandler())
 	// r.Options("/", newHandler())
+	// r.Trace("/", newHandler())
 
-	// Define custom method
-	// r.Route("CONNECT", "/", newHandler())
+	mux := r.Mux()
 
-	log.Fatal(http.ListenAndServe("localhost:8888", r.Mux()))
+	// or chain the routes
+	// mux := router.New().
+	// 	Get("/", newHandler()).
+	// 	Head("/", newHandler()).
+	// 	Post("/", newHandler()).
+	// 	Put("/", newHandler()).
+	// 	Patch("/", newHandler()).
+	// 	Delete("/", newHandler()).
+	// 	Connect("/", newHandler()).
+	// 	Options("/", newHandler()).
+	// 	Trace("/", newHandler()).
+	// 	Mux()
+
+	log.Fatal(http.ListenAndServe("localhost:8888", mux))
 }
 ```
 
@@ -50,7 +65,7 @@ $ curl http://localhost:8888/
 Success
 
 $ curl http://localhost:8888/ -X POST
-Method Not Allowed
+Not Implemented
 ```
 
 ## License

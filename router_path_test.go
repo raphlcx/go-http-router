@@ -22,6 +22,7 @@ func TestRouterPath(t *testing.T) {
 		}
 
 		req, _ = http.NewRequest("GET", "/", nil)
+		rr = httptest.NewRecorder()
 
 		router.Mux().ServeHTTP(rr, req)
 
@@ -30,6 +31,7 @@ func TestRouterPath(t *testing.T) {
 		}
 
 		req, _ = http.NewRequest("PUT", "/", nil)
+		rr = httptest.NewRecorder()
 
 		router.Mux().ServeHTTP(rr, req)
 
@@ -51,6 +53,20 @@ func TestRouterPath(t *testing.T) {
 
 		if status := rr.Code; status != http.StatusOK {
 			t.Errorf("Expecting status code %d, got %d instead", http.StatusOK, status)
+		}
+	})
+
+	t.Run("no path matches", func(t *testing.T) {
+		router := New()
+		router.Get("/api/users", newHandler())
+
+		req, _ := http.NewRequest("GET", "/api/products", nil)
+		rr := httptest.NewRecorder()
+
+		router.Mux().ServeHTTP(rr, req)
+
+		if status := rr.Code; status != http.StatusNotFound {
+			t.Errorf("Expecting status code %d, got %d instead", http.StatusNotFound, status)
 		}
 	})
 }

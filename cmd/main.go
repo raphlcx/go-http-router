@@ -32,5 +32,20 @@ func main() {
 	// r.Options("/", newHandler())
 	// r.Trace("/", newHandler())
 
-	log.Fatal(http.ListenAndServe("localhost:8888", r.Mux()))
+	mux := r.Mux()
+
+	// or chain the routes
+	// mux := router.New().
+	// 	Get("/", newHandler()).
+	// 	Head("/", newHandler()).
+	// 	Post("/", newHandler()).
+	// 	Put("/", newHandler()).
+	// 	Patch("/", newHandler()).
+	// 	Delete("/", newHandler()).
+	// 	Connect("/", newHandler()).
+	// 	Options("/", newHandler()).
+	// 	Trace("/", newHandler()).
+	// 	Mux()
+
+	log.Fatal(http.ListenAndServe("localhost:8888", mux))
 }
